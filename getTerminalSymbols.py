@@ -28,10 +28,15 @@ for grammer in grammers:
 
 right_exprs -= left_exprs
 
-T = open("non-terminalSybol","w",encoding='utf-8')
-for i in left_exprs:
-    T.write(i+"\n")
+T = open("T_and_NT.py","w",encoding='utf-8')
+T.write("NT = {")
+for left_expr in left_exprs:
+    T.write("\""+left_expr+"\", ")
 
-T = open("terminalSybol","w",encoding='utf-8')
-for i in right_exprs:
-    T.write(i+"\n")
+T.write("}\n")
+
+T.write("T = {")
+for right_expr in right_exprs:
+    T.write("\""+right_expr+"\", ")
+
+T.write("}\n")
