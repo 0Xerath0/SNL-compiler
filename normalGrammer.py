@@ -1,10 +1,5 @@
 
 
-#Date: 2021-03-25 09:28:15
-#LastEditors: Xerath
-#LastEditTime: 2021-03-25 09:28:57
-#FilePath: \SNLComlier\NormalGrammer.py
-
 import re
 from typing import Counter
 
@@ -14,17 +9,23 @@ content = origin.readlines()
 middle_content = []
 final_content=[]
 for i in content:
+    i = re.sub("（","(",i)
+    i = re.sub("）",")",i)
+    #conver Chinese quotes to English quotes
     i = re.sub("::="," ::= ",i)
     i = re.sub("\|", " | ", i)
+    #split the grammer
     i = re.sub("\s+"," ",i)
+    #delete duplicate white space
     i = re.sub("\s*\d+\)\s*","",i)
-    i = re.sub("\s*\d+\）\s*","",i)
+    #delede the leading number of each line
     middle_content.append(i)
 
 line_conut = -1
 
 for i in middle_content:
     if re.search("::=",i):
+        
         final_content.append(i)
         line_conut += 1
     else:
@@ -32,6 +33,7 @@ for i in middle_content:
         final_content[line_conut] += i
 
 for i in final_content:
+    i = re.sub("\s+"," ",i)
     output.write(i+"\n")
 
 
