@@ -11,7 +11,7 @@ final_content=[]
 for i in content:
     i = re.sub("（","(",i)
     i = re.sub("）",")",i)
-    #conver Chinese quotes to English quotes
+    #convert Chinese quotes to English quotes
     i = re.sub("::="," ::= ",i)
     i = re.sub("\|", " | ", i)
     #split the grammer
