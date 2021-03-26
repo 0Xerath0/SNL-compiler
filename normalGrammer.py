@@ -21,16 +21,13 @@ for i in content:
     #delede the leading number of each line
     middle_content.append(i)
 
-line_conut = -1
-
 for i in middle_content:
     if re.search("::=",i):
         
         final_content.append(i)
-        line_conut += 1
     else:
         i = re.sub("^\s+"," ",i)
-        final_content[line_conut] += i
+        final_content[-1] += i
 
 for i in final_content:
     i = re.sub("\s+"," ",i)
