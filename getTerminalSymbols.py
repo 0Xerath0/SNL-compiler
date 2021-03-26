@@ -28,6 +28,12 @@ for grammer in grammers:
 
 right_exprs -= left_exprs
 
+
+left_exprs = sorted(list(left_exprs))
+right_exprs = sorted(list(right_exprs))
+# sort the symbols
+
+
 T = open("T_and_NT.py","w",encoding='utf-8')
 T.write("NT = {")
 for left_expr in left_exprs:
