@@ -1,0 +1,67 @@
+Program	{'#'}
+CallStmRest	{';'}
+IdMore	{';'}
+LoopStm	{';'}
+Invar	{')'}
+Stm	{';', 'E', 'N', 'D'}
+FormList	{';', ')'}
+OutputStm	{'E', 'N', ';', 'D'}
+StmList	{'E', 'N', 'D'}
+ParamList	{')'}
+ProgramHead	{'TYPE', '#'}
+FidMore	{';', ')'}
+RelExp	{'E', 'N', 'T', 'H'}
+InputStm	{'E', 'N', ';', 'D'}
+VarIdList	{';'}
+RecType	set()
+ReturnStm	{'E', 'N', ';', 'D'}
+ParamDecList	{')'}
+ProcDec	{'BEGIN'}
+Low	set()
+VarDecList	set()
+IdList	{';'}
+FieldDecList	{'E', 'N', 'D'}
+Top	set()
+Variable	{'*', '+', ')', '/', '-'}
+Param	{';', ')'}
+AssignmentRest	{';'}
+Exp	{')'}
+OtherFactor	{'+', '-', ')'}
+TypeId	{'='}
+ProcDecMore	set()
+VarDecMore	set()
+StmMore	{'E', 'N', 'D'}
+MultOp	{'(', 'INTC', 'ID'}
+FieldDecMore	{'E', 'N', 'D'}
+OtherTerm	{')'}
+TypeDeclaration	{'VAR'}
+TypeDec	{'BEGIN', 'VAR'}
+CmpOp	{'(', 'INTC', 'ID'}
+ParamMore	{')'}
+ProcDeclaration	{'BEGIN'}
+ArrayType	{'ID'}
+VarDeclaration	{'PROCEDURE'}
+ConditionalStm	{'E', 'N', ';', 'D'}
+VarDec	{'BEGIN', 'PROCEDURE'}
+Term	{'+', ')', '-'}
+FieldVarMore	{'=', ':'}
+AddOp	{'(', 'INTC', 'ID'}
+DeclarePart	{'BEGIN'}
+ProgramName	{'TYPE', '#'}
+ProgramBody	{'PROCEDURE', '#'}
+ProcBody	{'BEGIN', 'PROCEDURE'}
+TypeDecMore	set()
+StructureType	{';'}
+VarIdMore	{';'}
+OtherRelE	{'E', 'N', 'H', 'T'}
+TypeDecList	{'VAR'}
+ProcName	{'('}
+ActParamList	{')'}
+TypeName	{';'}
+VariMore	{'=', ':'}
+Factor	{'*', '+', ')', '/', '-'}
+AssCall	{'E', 'N', ';', 'D'}
+BaseType	{';', 'ID'}
+ProcDecPart	{'BEGIN'}
+ActParamMore	{')'}
+FieldVar	{'=', ':'}
