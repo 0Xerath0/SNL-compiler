@@ -1,7 +1,14 @@
 
 
+#Date: 2021-03-25 09:28:15
+#LastEditors: Xerath
+#LastEditTime: 2021-04-07 09:33:08
+#FilePath: \SNLComlier\NormalGrammer.py
+
+
+
 import re
-from typing import Counter
+
 
 origin = open("Grammer.txt","r",encoding="utf-8")
 output = open("normalGrammer.txt","w",encoding="utf-8")
@@ -32,5 +39,17 @@ for i in middle_content:
 for i in final_content:
     i = re.sub("\s+"," ",i)
     output.write(i+"\n")
+
+output.close()
+
+output2 = open("splitedGrammer.txt","w",encoding='utf-8')
+# final_content.sort()
+for i in final_content:
+    # i = re.sub("ε","\'\'",i)
+    head = i.split("::=")[0].strip(" ")
+    right_exprs= i.split("::=")[1].strip(" ").split("|")
+    for right_expr in right_exprs:
+        output2.write(head+" -> "+right_expr.strip(" ")+"\n")
+
 
 
