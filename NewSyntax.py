@@ -15,12 +15,12 @@ productions = list()
 first_sets = dict()
 follow_sets = dict()
 predict_sets = dict()
+LL1_table = dict()
 
 def sets_init():
     for symbol in NT:
             first_sets[symbol] = set()
             follow_sets[symbol] = set()
-            predict_sets[symbol] = set()
     for i in T:
         first_sets[i] = set()
         first_sets[i].add(i)
@@ -128,15 +128,24 @@ def getFollowSet():
         if(tmp_sets != follow_sets):
             changed = True
 
-# def getPredictSet():
-#     for production in productions:
-#         head = production.split(" -> ")[0]
-#         body = production.split(" -> ")[1].strip("\n")
-#         tmp = getFirstFromString(body)
-#         if 'ε' in tmp:
-#             predict_sets[production] = 
+def getPredictSet():
+    for production in productions:
+        production = production.strip("\n")
+        head = production.split(" -> ")[0]
+        body = production.split(" -> ")[1]
+        tmp = getFirstFromString(body)
+        if 'ε' in tmp:
+            predict_sets[production] = tmp
+        else:
+            predict_sets[production] = (tmp -set('ε')).union(follow_sets[head])
 
-
+def getLL1Table():
+    for production in productions:
+        production = production.strip("\n")
+        head = production.split(" -> ")[0]
+        body = production.split(" -> ")[1].strip(" ")
+        for t in predict_sets[production]:
+            LL1_table[(t,head)] = body
 getFirstSet()
 # f = open("FirstSet3.txt","w",encoding='utf-8')
 # SNT =list(NT)
@@ -148,19 +157,38 @@ getFirstSet()
 # f.close()
 
 getFollowSet()
-f = open("FollowSet3.txt","w",encoding='utf-8')
-SNT =list(NT)
-SNT.sort()
-for nt in SNT:
-    tmp = list(follow_sets[nt])
-    tmp.sort()
-    f.write(nt+"\t"+str(tmp)+"\n")
+# f = open("FollowSet3.txt","w",encoding='utf-8')
+# SNT =list(NT)
+# SNT.sort()
+# for nt in SNT:
+#     tmp = list(follow_sets[nt])
+#     tmp.sort()
+#     f.write(nt+"\t"+str(tmp)+"\n")
+# f.close()
+
+getPredictSet()
+# f = open("PredictSet.txt","w",encoding='utf-8')
+# for i in predict_sets:
+
+#     f.write(i.strip("\n") + "\t"+str(predict_sets[i])+"\n")
+# f.close()
+
+getLL1Table()
+f = open("LL(1)Table.txt","w",encoding='utf-8')
+for i in LL1_table:
+
+    f.write(i[1]+" -> "+i[0]+" : "+i[1]+" -> "+LL1_table[i]+"\n")
 f.close()
+
+
+    
+
              
 
 for production in productions:
+    production = production.strip("\n")
     head = production.split(" -> ")[0]
-    body = production.split(" -> ")[1].strip("\n").strip(" ").split(" ")
+    body = production.split(" -> ")[1].strip(" ").split(" ")
     l = len(body)
     for element in body:
         # if body.index(element) + body[::-1].index(element) != l-1:
@@ -169,3 +197,8 @@ for production in productions:
         if body.count(element) > 2:
             print("Opps!")
             print(production+"\t"+element)
+
+
+
+        
+
