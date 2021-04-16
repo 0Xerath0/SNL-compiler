@@ -200,5 +200,48 @@ for production in productions:
 
 
 
+
+class Token:
+    def __init__(self,token:str, info:str, line:int) -> None:
+        self.token = token
+        self.info = info        
+        self.line = line
+
+f = open("TokenList.txt","r",encoding='utf-8')
+raw_tokens = f.readlines()
+f.close()
+TokenList = []
+for raw_token in raw_tokens:
+    content = raw_token.strip("\n").split("\t")
+    token = content[0]
+    info = content[1]
+    line = content[2]
+    TokenList.append(Token(token,info,line))
+
+for token in TokenList:
+    if token.token not in T:
+        print(token.token)
+    
+
+class SyntaxTreeNode:
+    def __init__(self,name,info):
+        self.name = name
+        self.info = info
+        self.chlidren = []
+        self.father = None
+
+    def insertChild(self,node):
+        self.children.append(node)
+        node.father = self
+
+
+root = SyntaxTreeNode("Program","ROOT")
+cur_node = root
+
+symbol_stack = []
+symbol_stack.append("Program")
+
+# def generateSyntaxTree():
+#     for token in TokenList:
         
 
