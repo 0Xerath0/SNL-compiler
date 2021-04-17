@@ -224,15 +224,24 @@ for token in TokenList:
     
 
 class SyntaxTreeNode:
-    def __init__(self,name,info):
-        self.name = name
+    def __init__(self,token,info):
+        self.token = token
         self.info = info
-        self.chlidren = []
+        self.children = []
         self.father = None
 
     def insertChild(self,node):
         self.children.append(node)
         node.father = self
+
+    def step(self):
+        tmp_node = self
+        while(tmp_node.father.children[::-1].index(tmp_node) == 0):
+            tmp_node = tmp_node.father
+        tmp_node = tmp_node.father.children[tmp_node.father.children.index(tmp_node)+1]
+        return tmp_node
+
+
 
 
 root = SyntaxTreeNode("Program","ROOT")
@@ -241,7 +250,33 @@ cur_node = root
 symbol_stack = []
 symbol_stack.append("Program")
 
-# def generateSyntaxTree():
-#     for token in TokenList:
+def generateSyntaxTree():
+    global symbol_stack
+    global cur_node
+    for token in TokenList:
+        while token.token != symbol_stack[0]:
+            try:
+                body = LL1_table[(token.token,symbol_stack[0])].strip("").split(" ")
+                #得到能产生该终极符的产生式右部
+                symbol_stack.pop(0)
+                #弹出原先的非终极符
+                symbol_stack = body + symbol_stack
+                #加入产生的右部
+                for element in body:
+                    cur_node.insertChild(SyntaxTreeNode(token=element,info = ""))
+                cur_node = cur_node.children[0]
+
+            except KeyError:
+                print(token.token+"\t"+symbol_stack[0])
+                return
+            
+        print(str(symbol_stack)+" "+cur_node.token)
+        symbol_stack.pop(0)
+        cur_node.info = token.info
+        cur_node.token = token.token
+        cur_node = cur_node.step()
+        #若成功匹配，则语法树回退到上一级
+
         
 
+generateSyntaxTree()
