@@ -209,7 +209,7 @@ class Token:
 f = open("TokenList.txt", "r", encoding='utf-8')
 raw_tokens = f.readlines()
 f.close()
-raw_tokens.append("#\tNDING\t-1")
+raw_tokens.append("#\tENDING\t-1")
 TokenList = []
 for raw_token in raw_tokens:
     content = raw_token.strip("\n").split("\t")
@@ -222,29 +222,36 @@ for token in TokenList:
     if token.token not in T:
         print(token.token)
 
-
+node_count = (x for x in range(100000))
 class SyntaxTreeNode:
     def __init__(self, token, info):
         self.token = token
         self.info = info
         self.children = []
         self.father = None
+        self.sibling = None
+        self.id = next(node_count)
 
-    def insertChild(self,node):
+    def insertChild(self, node):
         self.children.append(node)
         node.father = self
+        node.sibling = self.children
 
     def step(self):
+        global root
         tmp_node = self
-        while(tmp_node.father.children[::-1].index(tmp_node) == 0):
+
+        while tmp_node.id != 0 and tmp_node.sibling[::-1].index(tmp_node) == 0:
             tmp_node = tmp_node.father
-        tmp_node = tmp_node.father.children[tmp_node.father.children.index(tmp_node)+1]
+            print(tmp_node.id)
+        if tmp_node.id != 0:
+            tmp_node = tmp_node.sibling[tmp_node.sibling.index(tmp_node)+1]
         return tmp_node
 
 
 
 
-root = SyntaxTreeNode("Program","ROOT")
+root = SyntaxTreeNode("Program", "ROOT")
 cur_node = root
 
 symbol_stack = []
@@ -252,27 +259,38 @@ symbol_stack = []
 symbol_stack.append("Program")
 symbol_stack.append('#')
 
+
+
 def generateSyntaxTree():
     global symbol_stack
     global cur_node
     for token in TokenList:
         while token.token != symbol_stack[0]:
             try:
-                body = LL1_table[(token.token,symbol_stack[0])].strip("").split(" ")
+                body = LL1_table[(token.token, symbol_stack[0])].strip("").split(" ")
                 # 得到能产生该终极符的产生式右部
                 symbol_stack.pop(0)
                 # 弹出原先的非终极符
                 symbol_stack = body + symbol_stack
+                if symbol_stack[0] == 'INTEGER':
+                    a = 1
                 if symbol_stack[0] == 'ε':
                     symbol_stack.pop(0)
+                    cur_node.insertChild(SyntaxTreeNode(token='ε', info = "empty"))
+                    cur_node = cur_node.step()
                 # 加入产生的右部
-                for element in body:
-                    cur_node.insertChild(SyntaxTreeNode(token=element, info = ""))
-                cur_node = cur_node.children[0]
+                else:
+                    for element in body:
+                        cur_node.insertChild(SyntaxTreeNode(token=element, info = ""))
+                    cur_node = cur_node.children[0]
 
             except KeyError:
                 print(token.token+"\t"+symbol_stack[0])
                 return
+
+        if token.token == "#":
+            return
+
 
         print(str(symbol_stack)+" "+cur_node.token)
         symbol_stack.pop(0)
@@ -282,5 +300,36 @@ def generateSyntaxTree():
         # 若成功匹配，则语法树回退到上一级
 
 
-
 generateSyntaxTree()
+
+f = open("text.dot", "w", encoding='utf-8')
+count = 0
+node_stack = []
+node_stack.append(root)
+graphviz_file = []
+dot_relation = []
+graphviz_file.append("digraph g {\n")
+graphviz_file.append("\tnode [shape = record,height=.1];\n")
+while node_stack:
+    tmp = node_stack.pop(0)
+    if tmp.token == 'ε':
+        color = "[color=yellow]"
+    elif tmp.token in T:
+        color = "[color=red]"
+    else:
+        color = ""
+
+    graphviz_file.append("\tnode"+str(tmp.id)+"[label = \""+tmp.token+"\\n"+tmp.info+"\"]"+ color+ ";\n")
+    # graphviz_file.append("\tnode" + str(tmp.id) + "[label = \"" + tmp.token + "\"];\n")
+
+    for child in tmp.children:
+        node_stack.append(child)
+        dot_relation.append("\tnode{}".format(tmp.id)+" -> node{};\n".format(child.id))
+for i in graphviz_file:
+    f.write(i)
+
+for i in dot_relation:
+    f.write(i)
+
+f.write("}")
+f.close()
