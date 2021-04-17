@@ -128,13 +128,15 @@ def getFollowSet():
         if(tmp_sets != follow_sets):
             changed = True
 
-# def getPredictSet():
-#     for production in productions:
-#         head = production.split(" -> ")[0]
-#         body = production.split(" -> ")[1].strip("\n")
-#         tmp = getFirstFromString(body)
-#         if 'ε' in tmp:
-#             predict_sets[production] = 
+def getPredictSet():
+    for production in productions:
+        head = production.split(" -> ")[0]
+        body = production.split(" -> ")[1].strip("\n")
+        tmp = getFirstFromString(body)
+        if 'ε' in tmp:
+            predict_sets[production] = follow_sets[head].uinon(tmp-set('ε'))
+        else:
+            predict_sets[production] = tmp
 
 
 getFirstSet()
