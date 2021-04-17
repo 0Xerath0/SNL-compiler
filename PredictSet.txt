@@ -1,16 +1,16 @@
-Program -> ProgramHead DeclarePart ProgramBody	{'PROGRAM'}
+Program -> ProgramHead DeclarePart ProgramBody .	{'PROGRAM'}
 ProgramHead -> PROGRAM ProgramName	{'PROGRAM'}
 ProgramName -> ID	{'ID'}
-DeclarePart -> TypeDec VarDec ProcDec	{'TYPE', 'PROCEDURE', 'BEGIN', 'VAR'}
-TypeDec -> ε	{'BEGIN', 'PROCEDURE', 'VAR'}
+DeclarePart -> TypeDec VarDec ProcDec	{'VAR', 'BEGIN', 'PROCEDURE', 'TYPE'}
+TypeDec -> ε	{'VAR', 'BEGIN', 'PROCEDURE'}
 TypeDec -> TypeDeclaration	{'TYPE'}
 TypeDeclaration -> TYPE TypeDecList	{'TYPE'}
 TypeDecList -> TypeId = TypeName ; TypeDecMore	{'ID'}
-TypeDecMore -> ε	{'BEGIN', 'PROCEDURE', 'VAR'}
+TypeDecMore -> ε	{'VAR', 'BEGIN', 'PROCEDURE'}
 TypeDecMore -> TypeDecList	{'ID'}
 TypeId -> ID	{'ID'}
 TypeName -> BaseType	{'CHAR', 'INTEGER'}
-TypeName -> StructureType	{'RECORD', 'ARRAY'}
+TypeName -> StructureType	{'ARRAY', 'RECORD'}
 TypeName -> ID	{'ID'}
 BaseType -> INTEGER	{'INTEGER'}
 BaseType -> CHAR	{'CHAR'}
@@ -27,12 +27,12 @@ FieldDecMore -> FieldDecList	{'ARRAY', 'CHAR', 'INTEGER'}
 IdList -> ID IdMore	{'ID'}
 IdMore -> ε	{';'}
 IdMore -> , IdList	{','}
-VarDec -> ε	{'BEGIN', 'PROCEDURE'}
+VarDec -> ε	{'PROCEDURE', 'BEGIN'}
 VarDec -> VarDeclaration	{'VAR'}
 VarDeclaration -> VAR VarDecList	{'VAR'}
-VarDecList -> TypeName VarIdList ; VarDecMore	{'ARRAY', 'CHAR', 'INTEGER', 'RECORD', 'ID'}
-VarDecMore -> ε	{'BEGIN', 'PROCEDURE'}
-VarDecMore -> VarDecList	{'ARRAY', 'CHAR', 'INTEGER', 'RECORD', 'ID'}
+VarDecList -> TypeName VarIdList ; VarDecMore	{'ID', 'RECORD', 'INTEGER', 'ARRAY', 'CHAR'}
+VarDecMore -> ε	{'PROCEDURE', 'BEGIN'}
+VarDecMore -> VarDecList	{'ID', 'RECORD', 'INTEGER', 'ARRAY', 'CHAR'}
 VarIdList -> ID VarIdMore	{'ID'}
 VarIdMore -> ε	{';'}
 VarIdMore -> , VarIdList	{','}
@@ -43,20 +43,20 @@ ProcDecMore -> ε	{'BEGIN'}
 ProcDecMore -> ProcDeclaration	{'PROCEDURE'}
 ProcName -> ID	{'ID'}
 ParamList -> ε	{')'}
-ParamList -> ParamDecList	{'ARRAY', 'CHAR', 'INTEGER', 'RECORD', 'ID', 'VAR'}
-ParamDecList -> Param ParamMore	{'ARRAY', 'CHAR', 'INTEGER', 'RECORD', 'ID', 'VAR'}
+ParamList -> ParamDecList	{'VAR', 'ID', 'RECORD', 'INTEGER', 'ARRAY', 'CHAR'}
+ParamDecList -> Param ParamMore	{'VAR', 'ID', 'RECORD', 'INTEGER', 'ARRAY', 'CHAR'}
 ParamMore -> ε	{')'}
 ParamMore -> ; ParamDecList	{';'}
-Param -> TypeName FormList	{'ARRAY', 'CHAR', 'INTEGER', 'RECORD', 'ID'}
+Param -> TypeName FormList	{'ID', 'RECORD', 'INTEGER', 'ARRAY', 'CHAR'}
 Param -> VAR TypeName FormList	{'VAR'}
 FormList -> ID FidMore	{'ID'}
 FidMore -> ε	{';', ')'}
 FidMore -> , FormList	{','}
-ProcDecPart -> DeclarePart	{'TYPE', 'PROCEDURE', 'BEGIN', 'VAR'}
+ProcDecPart -> DeclarePart	{'VAR', 'BEGIN', 'PROCEDURE', 'TYPE'}
 ProcBody -> ProgramBody	{'BEGIN'}
 ProgramBody -> BEGIN StmList END	{'BEGIN'}
-StmList -> Stm StmMore	{'READ', 'IF', 'WHILE', 'ID', 'RETURN', 'WRITE'}
-StmMore -> ε	{'ELSE', 'FI', 'END', 'ENDWH'}
+StmList -> Stm StmMore	{'RETURN', 'ID', 'WHILE', 'WRITE', 'READ', 'IF'}
+StmMore -> ε	{'END', 'ENDWH', 'FI', 'ELSE'}
 StmMore -> ; StmList	{';'}
 Stm -> ConditionalStm	{'IF'}
 Stm -> LoopStm	{'WHILE'}
@@ -75,26 +75,26 @@ OutputStm -> WRITE ( Exp )	{'WRITE'}
 ReturnStm -> RETURN ( Exp )	{'RETURN'}
 CallStmRest -> ( ActParamList )	{'('}
 ActParamList -> ε	{')'}
-ActParamList -> Exp ActParamMore	{'(', 'ID', 'INTC'}
+ActParamList -> Exp ActParamMore	{'ID', '(', 'INTC'}
 ActParamMore -> ε	{')'}
 ActParamMore -> , ActParamList	{','}
-RelExp -> Exp OtherRelE	{'(', 'ID', 'INTC'}
+RelExp -> Exp OtherRelE	{'ID', '(', 'INTC'}
 OtherRelE -> CmpOp Exp	{'=', '<'}
-Exp -> Term OtherTerm	{'(', 'ID', 'INTC'}
-OtherTerm -> ε	{'ELSE', 'FI', ';', 'THEN', '=', ',', 'ENDWH', '<', ']', 'DO', 'END', ')'}
-OtherTerm -> AddOp Exp	{'+', '-'}
-Term -> Factor OtherFactor	{'(', 'ID', 'INTC'}
-OtherFactor -> ε	{'ELSE', 'FI', ';', 'THEN', '=', ',', 'ENDWH', '<', '+', ']', '-', 'DO', 'END', ')'}
-OtherFactor -> MultOp Term	{'*', '/'}
+Exp -> Term OtherTerm	{'ID', '(', 'INTC'}
+OtherTerm -> ε	{'DO', ';', 'THEN', 'FI', ',', '=', 'ELSE', ']', 'END', ')', 'ENDWH', '<'}
+OtherTerm -> AddOp Exp	{'-', '+'}
+Term -> Factor OtherFactor	{'ID', '(', 'INTC'}
+OtherFactor -> ε	{'DO', ';', 'THEN', 'FI', ',', '=', '+', 'ELSE', '-', ']', 'END', ')', 'ENDWH', '<'}
+OtherFactor -> MultOp Term	{'/', '*'}
 Factor -> ( Exp )	{'('}
 Factor -> INTC	{'INTC'}
 Factor -> Variable	{'ID'}
 Variable -> ID VariMore	{'ID'}
-VariMore -> ε	{'ELSE', ';', 'THEN', '/', '<', '+', '-', 'DO', ')', 'FI', '*', '=', ',', ':=', ']', 'END', 'ENDWH'}
+VariMore -> ε	{'/', 'THEN', ']', ';', 'END', ')', '<', 'DO', '*', 'FI', ':=', '=', '+', 'ELSE', '-', ',', 'ENDWH'}
 VariMore -> [ Exp ]	{'['}
 VariMore -> . FieldVar	{'.'}
 FieldVar -> ID FieldVarMore	{'ID'}
-FieldVarMore -> ε	{'ELSE', ';', 'THEN', '/', '<', '+', '-', 'DO', ')', 'FI', '*', '=', ',', ':=', ']', 'END', 'ENDWH'}
+FieldVarMore -> ε	{'/', 'THEN', ']', ';', 'END', ')', '<', 'DO', '*', 'FI', ':=', '=', '+', 'ELSE', '-', ',', 'ENDWH'}
 FieldVarMore -> [ Exp ]	{'['}
 CmpOp -> <	{'<'}
 CmpOp -> =	{'='}

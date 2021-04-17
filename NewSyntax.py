@@ -161,7 +161,7 @@ getFirstSet()
 # f.close()
 
 getFollowSet()
-# f = open("FollowSet3.txt","w",encoding='utf-8')
+# f = open("FollowSet3.txt", "w", encoding='utf-8')
 # SNT =list(NT)
 # SNT.sort()
 # for nt in SNT:
@@ -171,18 +171,18 @@ getFollowSet()
 # f.close()
 
 getPredictSet()
-f = open("PredictSet.txt", "w", encoding='utf-8')
-for i in predict_sets:
-
-    f.write(i.strip("\n") + "\t"+str(predict_sets[i])+"\n")
-f.close()
+# f = open("PredictSet.txt", "w", encoding='utf-8')
+# for i in predict_sets:
+#
+#     f.write(i.strip("\n") + "\t"+str(predict_sets[i])+"\n")
+# f.close()
 
 getLL1Table()
-f = open("LL(1)Table.txt", "w", encoding='utf-8')
-for i in LL1_table:
-
-    f.write(i[1]+" -> "+i[0]+" : "+i[1]+" -> "+LL1_table[i]+"\n")
-f.close()
+# f = open("LL(1)Table.txt", "w", encoding='utf-8')
+# for i in LL1_table:
+#
+#     f.write(i[1]+" -> "+i[0]+" : "+i[1]+" -> "+LL1_table[i]+"\n")
+# f.close()
 
 
 for production in productions:
@@ -209,6 +209,7 @@ class Token:
 f = open("TokenList.txt", "r", encoding='utf-8')
 raw_tokens = f.readlines()
 f.close()
+raw_tokens.append("#\tNDING\t-1")
 TokenList = []
 for raw_token in raw_tokens:
     content = raw_token.strip("\n").split("\t")
@@ -247,7 +248,9 @@ root = SyntaxTreeNode("Program","ROOT")
 cur_node = root
 
 symbol_stack = []
+
 symbol_stack.append("Program")
+symbol_stack.append('#')
 
 def generateSyntaxTree():
     global symbol_stack
@@ -260,9 +263,11 @@ def generateSyntaxTree():
                 symbol_stack.pop(0)
                 # 弹出原先的非终极符
                 symbol_stack = body + symbol_stack
+                if symbol_stack[0] == 'ε':
+                    symbol_stack.pop(0)
                 # 加入产生的右部
                 for element in body:
-                    cur_node.insertChild(SyntaxTreeNode(token=element,info = ""))
+                    cur_node.insertChild(SyntaxTreeNode(token=element, info = ""))
                 cur_node = cur_node.children[0]
 
             except KeyError:
