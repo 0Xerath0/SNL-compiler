@@ -185,7 +185,7 @@ def writePredictSet():
     f = open("SyntaxAnalysis\essentials\PredictSet.py", "w", encoding='utf-8')
     f.write("predict_sets = {\n")
     for i in predict_sets:
-        f.write("\t\""+str(i).strip("\n") + "\": " + str(predict_sets[i]) + ","+"\n")
+        f.write("\t"+str(i).strip("\n") + ": " + str(predict_sets[i]) + ","+"\n")
     f.write("}")
     f.close()
 
@@ -337,7 +337,7 @@ def generateRDSyntaxTree():
 generateLL1SyntaxTree()
 
 def outputLL1SyntaxTree():
-    f = open("LL(1).dot", "w", encoding='utf-8')
+    f = open("LL1.dot", "w", encoding='utf-8')
     count = 0
     node_stack = []
     node_stack.append(LL1_root)
@@ -369,3 +369,5 @@ def outputLL1SyntaxTree():
 
     f.write("}")
     f.close()
+
+outputLL1SyntaxTree()
